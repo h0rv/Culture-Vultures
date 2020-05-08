@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "72429338230",
+    "firebase_url": "https://androidfinalproject-e27f1.firebaseio.com",
+    "project_id": "androidfinalproject-e27f1",
+    "storage_bucket": "androidfinalproject-e27f1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:72429338230:android:10a080892be211406a2957",
+        "android_client_info": {
+          "package_name": "robbyhorvath.honorsmobileapps.unsocialmediaapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "72429338230-sh70k1k19on77caa1piab43kk0i9ovlf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsChPXkKwi-529HO7mgXfns6eDCLTqiAM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "72429338230-sh70k1k19on77caa1piab43kk0i9ovlf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

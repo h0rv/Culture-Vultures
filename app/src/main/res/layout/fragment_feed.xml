@@ -6,12 +6,9 @@
     tools:context=".FeedFragment"
     android:background="@color/colorAccent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/feedRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Feed Frag"
-        android:padding="12dp"
-        android:gravity="center"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

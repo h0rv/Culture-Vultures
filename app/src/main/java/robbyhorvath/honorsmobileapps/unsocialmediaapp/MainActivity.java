@@ -18,6 +18,8 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
     private StorageReference mStorageRef;
 
+    public static final int MAIN_REQUEST_CODE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,10 +34,10 @@ public class MainActivity extends AppCompatActivity {
         openFragment(FeedFragment.newInstance());
     }
 
-
     BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     switch (item.getItemId()) {
                         case R.id.action_feed:
                             openFragment(FeedFragment.newInstance());
@@ -50,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
                     return false;
                 }
             };
-
 
     public void openFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

@@ -127,7 +127,7 @@ public class EditProfile extends AppCompatActivity {
 
     public void confirmChange(View view) {
         String newBio = editText.getText().toString();
-        mDatabaseRef.child("users").child(Objects.requireNonNull(mAuth.getUid())).child("bio").setValue(newBio).addOnSuccessListener(new OnSuccessListener<Void>() {
+        mDatabaseRef.child("Users").child(Objects.requireNonNull(mAuth.getUid())).child("bio").setValue(newBio).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 finish();

@@ -5,7 +5,6 @@ public class User {
 
     private String username;
     private String bio;
-    private String[] posts;
     private String profilePicUrl;
 
     public User() {
@@ -43,13 +42,6 @@ public class User {
 
     public void setBio(String bio) {
         this.bio = bio;
-    }
-    public String[] getPosts() {
-        return posts;
-    }
-
-    public void setPosts(String[] posts) {
-        this.posts = posts;
     }
 
     public String getProfilePicUrl() {

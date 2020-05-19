@@ -6,26 +6,33 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
 import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String PROFILE_PIC = "profile picture";
-    private static final String BIO_TEXT = "bio text";
-    public static final int PROFILE_REQUEST_CODE = 2;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    public static final int PROFILE_REQUEST_CODE = 3;
 
+    private CircleImageView profileImageView;
+    private TextView usernameTextView;
+    private TextView bioTextView;
+
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference mDatabaseRef;
+    private StorageReference mStorageRef;
+    private FirebaseAuth mAuth;
     public ProfileFragment() {
-        // Required empty public constructor
     }
 
     public static ProfileFragment newInstance() {
@@ -50,14 +57,16 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
         ImageButton editButton = (ImageButton) rootView.findViewById(R.id.edit_button);
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance();
+        mDatabaseRef = mDatabase.getReference();
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+
 
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), EditProfile.class);
-                TextView textView = view.getRootView().findViewById(R.id.bio_text);
-                ImageView imageView = view.getRootView().findViewById(R.id.profile_picture);
-                intent.putExtra(BIO_TEXT, textView.getText());
                 startActivityForResult(intent, PROFILE_REQUEST_CODE);
             }
         });
@@ -72,4 +81,12 @@ public class ProfileFragment extends Fragment {
 
         }
     }
+
+    private void updateProfileUi(){
+
+
+    }
+
+
 }
+

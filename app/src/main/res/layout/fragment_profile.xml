@@ -3,19 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".ProfileFragment">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="176dp"
-        android:layout_margin="8dp"
+        android:layout_margin="12dp"
         android:orientation="vertical"
-        android:padding="16dp">
+        app:cardCornerRadius="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="144dp">
+            android:layout_height="match_parent"
+            android:padding="16dp">
 
             <LinearLayout
                 android:id="@+id/profile_picture_and_username"
@@ -34,8 +36,9 @@
                     android:id="@+id/username_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:layout_gravity="center"
-                    android:gravity="center"
+                    android:textAlignment="center"
                     android:maxLines="1"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -46,7 +49,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:gravity="start"
+                android:gravity="center_vertical"
                 android:padding="4dp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>

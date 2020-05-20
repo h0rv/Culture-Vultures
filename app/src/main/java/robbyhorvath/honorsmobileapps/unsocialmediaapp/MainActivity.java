@@ -9,22 +9,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 public class MainActivity extends AppCompatActivity {
     public static final int MAIN_REQUEST_CODE = 1;
 
     BottomNavigationView bottomNavigationView;
-
-    private FirebaseDatabase mDatabase;
-    private DatabaseReference mPostsDatabaseReference;
-    private DatabaseReference mUsersDatabaseReference;
-    private StorageReference mStorageRef;
-    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +39,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance();
-        mPostsDatabaseReference = mDatabase.getReference("posts");
-        mUsersDatabaseReference = mDatabase.getReference("users");
-        mStorageRef = FirebaseStorage.getInstance().getReference();
-
-
+        openFragment(new FeedFragment());
     }
 
     public void openFragment(Fragment fragment) {

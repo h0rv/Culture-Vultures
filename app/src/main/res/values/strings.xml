@@ -1,10 +1,8 @@
 <resources>
-    <string name="app_name">Unsocial Media App</string>
+    <string name="app_name">Culture Vultures</string>
     <string name="feed">Feed</string>
     <string name="profile">Profile</string>
     <string name="search">Search</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="set_profile_picture">Set New Profile Picture</string>
     <string name="cancel">Cancel</string>

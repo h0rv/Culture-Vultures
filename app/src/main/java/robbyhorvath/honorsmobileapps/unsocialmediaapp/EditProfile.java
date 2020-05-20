@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -39,7 +38,6 @@ public class EditProfile extends AppCompatActivity {
 
     private ImageView imageView;
     private EditText editText;
-    private Button signOutButton;
 
     private String[] galleryPermissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static final int STORAGE_REQUEST = 222;

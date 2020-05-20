@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,12 +22,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends Fragment {
     public static final int PROFILE_REQUEST_CODE = 3;
 
-    private ImageView profileImageView;
+    private CircleImageView profileImageView;
     private TextView usernameTextView;
     private TextView bioTextView;
 
@@ -84,37 +85,22 @@ public class ProfileFragment extends Fragment {
     }
 
     private void populateProfile() {
-        Glide.with(this)
-                .load(mDatabaseRef.child("Users")
-                        .child(mAuth.getCurrentUser().getUid())
-                        .child("profilePicUrl"))
-                .into(profileImageView);
-
-        mDatabaseRef.child("Users").child(mAuth.getCurrentUser().getUid()).child("username").addValueEventListener(new ValueEventListener() {
+        mDatabaseRef.child("Users").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String username = (String) dataSnapshot.getValue();
-                username = '@'+""+username;
+                User currentUser = dataSnapshot.getValue(User.class);
+
+                Glide.with(ProfileFragment.this)
+                        .load(currentUser.getProfilePicUrl())
+                        .into(profileImageView);
+                String username = '@'+""+currentUser.getUsername();
                 usernameTextView.setText(username);
+                bioTextView.setText(currentUser.getBio());
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-
-        });
-        mDatabaseRef.child("Users").child(mAuth.getCurrentUser().getUid()).child("bio").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String bio = (String) dataSnapshot.getValue();
-                bioTextView.setText(bio);
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-
-        });
+            }});
     }
 
 

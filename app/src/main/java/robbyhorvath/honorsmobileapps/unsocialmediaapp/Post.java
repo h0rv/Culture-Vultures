@@ -9,8 +9,6 @@ import java.util.HashMap;
 public class Post {
 
     private String imageUrl;
-
-
     private String description;
     private String posterId;
     private HashMap<String, Object> timePosted;

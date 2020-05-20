@@ -15,9 +15,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SignInActivity"></activity>
-        <activity android:name=".MainActivity" />
-        <activity android:name=".EditProfile" />
+        <activity android:name=".NewPostActivity" />
+        <activity android:name=".SignInActivity" />
+        <activity android:name=".MainActivity"
+            />
+        <activity android:name=".EditProfileActivity" />
         <activity android:name=".SignUpActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

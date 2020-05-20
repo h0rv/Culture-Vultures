@@ -33,7 +33,7 @@ import java.util.Objects;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class EditProfile extends AppCompatActivity {
+public class EditProfileActivity extends AppCompatActivity {
     public static final int EDIT_PROFILE_REQUEST_CODE = 4;
 
     private ImageView imageView;
@@ -116,7 +116,7 @@ public class EditProfile extends AppCompatActivity {
                 .signOut(this)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     public void onComplete(@NonNull Task<Void> task) {
-                        Intent intent = new Intent(EditProfile.this, SignInActivity.class);
+                        Intent intent = new Intent(EditProfileActivity.this, SignInActivity.class);
                         startActivity(intent);
                         finish();
                     }

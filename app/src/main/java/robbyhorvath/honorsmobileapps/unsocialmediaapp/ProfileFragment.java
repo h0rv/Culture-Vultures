@@ -3,9 +3,11 @@ package robbyhorvath.honorsmobileapps.unsocialmediaapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,7 +28,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment{
     public static final int PROFILE_REQUEST_CODE = 3;
 
     private CircleImageView profileImageView;
@@ -54,7 +56,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
-        ImageButton editButton = (ImageButton) rootView.findViewById(R.id.edit_button);
+        setHasOptionsMenu(true);
         profileImageView = rootView.findViewById(R.id.profile_picture);
         usernameTextView = rootView.findViewById(R.id.username_text);
         bioTextView = rootView.findViewById(R.id.bio_text);
@@ -66,13 +68,6 @@ public class ProfileFragment extends Fragment {
 
         populateProfile();
 
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), EditProfile.class);
-                startActivityForResult(intent, PROFILE_REQUEST_CODE);
-            }
-        });
         return rootView;
     }
 
@@ -101,6 +96,18 @@ public class ProfileFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }});
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.profile_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent intent = new Intent(getActivity(), EditProfileActivity.class);
+        startActivityForResult(intent, PROFILE_REQUEST_CODE);
+        return true;
     }
 }
 

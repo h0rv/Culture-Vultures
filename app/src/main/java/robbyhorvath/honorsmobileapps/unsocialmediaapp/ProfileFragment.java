@@ -14,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,7 +27,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 
-public class ProfileFragment extends Fragment{
+public class ProfileFragment extends Fragment {
     public static final int PROFILE_REQUEST_CODE = 3;
 
     private CircleImageView profileImageView;
@@ -64,7 +63,7 @@ public class ProfileFragment extends Fragment{
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
         mDatabaseRef = mDatabase.getReference();
-        mStorageRef = FirebaseStorage.getInstance().getReference();
+
 
         populateProfile();
 
@@ -74,28 +73,39 @@ public class ProfileFragment extends Fragment{
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PROFILE_REQUEST_CODE && resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             populateProfile();
         }
     }
-
     private void populateProfile() {
         mDatabaseRef.child("Users").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User currentUser = dataSnapshot.getValue(User.class);
+                try {
 
-                Glide.with(ProfileFragment.this)
-                        .load(currentUser.getProfilePicUrl())
-                        .into(profileImageView);
-                String username = '@'+""+currentUser.getUsername();
-                usernameTextView.setText(username);
-                bioTextView.setText(currentUser.getBio());
+                    // TODO fix profile picture firebase caching to display new picture when updated
+
+                    GlideApp.with(ProfileFragment.this)
+                            .load(FirebaseStorage.getInstance().getReferenceFromUrl("gs://androidfinalproject-e27f1.appspot.com/profile pictures/").child(mAuth.getCurrentUser().getUid() + ".jpg"))
+                            .into(profileImageView);
+                    String username = '@' + "" + currentUser.getUsername();
+                    usernameTextView.setText(username);
+                    bioTextView.setText(currentUser.getBio());
+                } catch (Exception e) {
+                    GlideApp.with(ProfileFragment.this)
+                            .load(FirebaseStorage.getInstance().getReferenceFromUrl("gs://androidfinalproject-e27f1.appspot.com/profile pictures/xidK56sEwjUiq0HLBbMRSiMRkJ92.jpg"))
+                            .into(profileImageView);
+                    e.printStackTrace();
+                }
+
+
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }});
+            }
+        });
     }
 
     @Override
@@ -110,4 +120,3 @@ public class ProfileFragment extends Fragment{
         return true;
     }
 }
-

@@ -26,4 +26,7 @@
     <string name="sign_in">Sign In</string>
     <string name="new_post">New Post</string>
     <string name="edit_profile">Edit Profile</string>
+    <string name="select_image">Select Image</string>
+    <string name="post_description">Post Description:</string>
+    <string name="upload">Upload</string>
 </resources>

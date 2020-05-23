@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
         openFragment(new FeedFragment());
     }
 

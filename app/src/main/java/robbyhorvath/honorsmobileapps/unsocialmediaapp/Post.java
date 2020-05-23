@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class Post {
 
-    private String imageUrl;
+    private String imageKey;
     private String description;
     private String posterId;
     private HashMap<String, Object> timePosted;
@@ -17,20 +17,27 @@ public class Post {
         // public empty constructor
     }
 
-    public Post(String imageUrl, String description, String posterId) {
-        this.imageUrl = imageUrl;
+    public Post(String imageKey, String description, String posterId) {
+        this.imageKey = imageKey;
         this.description = description;
         this.posterId = posterId;
         timePosted = new HashMap<>();
         timePosted.put("timestamp", ServerValue.TIMESTAMP);
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public Post(String imageKey, String description, String posterId, HashMap<String, Object> timePosted) {
+        this.imageKey = imageKey;
+        this.description = description;
+        this.posterId = posterId;
+        this.timePosted = timePosted;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public String getImageKey() {
+        return imageKey;
+    }
+
+    public void setImageKey(String imageKey) {
+        this.imageKey = imageKey;
     }
 
     public String getDescription() {

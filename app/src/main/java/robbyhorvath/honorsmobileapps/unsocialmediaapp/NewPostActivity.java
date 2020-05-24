@@ -16,13 +16,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -49,6 +48,9 @@ public class NewPostActivity extends AppCompatActivity {
     private StorageReference mStorageRef;
     private FirebaseAuth mAuth;
 
+    private ProgressDialog progressDialog;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +63,8 @@ public class NewPostActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance();
         mDatabaseRef = mDatabase.getReference();
         mStorageRef = FirebaseStorage.getInstance().getReference();
+
+        postKey = mDatabase.getReference("posts").push().getKey();
     }
 
     public void confirmPost(View view) {
@@ -72,58 +76,76 @@ public class NewPostActivity extends AppCompatActivity {
     }
 
     private void createNewPost() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Uploading");
+        progressDialog.show();
+        uploadImage();
 
-        postKey = mDatabase.getReference("posts").push().getKey();
-        Post post = new Post(descriptionEditText.getText().toString(), mAuth.getCurrentUser().getUid());
-        uploadPost();
-        if(successfulUpload){
-            final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Posting");
-            progressDialog.show();
-            FirebaseDatabase.getInstance().getReference("Posts")
-                    .child(postKey)
-                    .setValue(post).addOnCompleteListener(new OnCompleteListener<Void>()  {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    progressDialog.dismiss();
-                    if (task.isSuccessful()) {
-                        Toast.makeText(NewPostActivity.this, "Upload Successful", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        successfulUpload = false;
-                    }
-                }
-            });
-        }
     }
 
-    private void uploadPost() {
+    private void uploadImage() {
         //if there is a file to upload
         if (filePath != null) {
-            //displaying a progress dialog while upload is going on
+
 
             mStorageRef.child("posts/" + postKey + ".jpg")
                     .putFile(filePath)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                         @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            successfulUpload = true;
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                // upload database info
+                                uploadDatabase();
+                                successfulUpload = true;
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Error Uploading Image", Toast.LENGTH_LONG).show();
+                                successfulUpload = false;
+                            }
                         }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            //displaying error message
-                            Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
-                            successfulUpload = false;
-                        }
-                    });
+                    }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    //calculating progress percentage
+                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+
+                    //displaying percentage in progress dialog
+                    progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
+                }
+            });
         }
         //if there is not any file
         else {
             Toast.makeText(getApplicationContext(), "Please select an image", Toast.LENGTH_SHORT).show();
-            successfulUpload = false;
         }
+    }
+
+    private void uploadDatabase() {
+        Post post = new Post(descriptionEditText.getText().toString(), mAuth.getCurrentUser().getUid());
+        // add post to /posts/
+        FirebaseDatabase.getInstance().getReference("Posts")
+                .child(postKey)
+                .setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(NewPostActivity.this, "Upload Successful", Toast.LENGTH_LONG).show();
+                    finish();
+                } else {
+//                        successfulUpload = false;
+                }
+            }
+        });
+        // update users/uid/posts/
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(mAuth.getCurrentUser().getUid()).child("posts").child(postKey)
+                .setValue(postKey).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    finish();
+                }
+            }
+        });
     }
 
 
@@ -136,7 +158,8 @@ public class NewPostActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
@@ -150,6 +173,7 @@ public class NewPostActivity extends AppCompatActivity {
             EasyPermissions.requestPermissions(this, "Please grant permission", STORAGE_REQUEST, perms);
         }
     }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == NEW_POST_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
@@ -163,3 +187,5 @@ public class NewPostActivity extends AppCompatActivity {
         }
     }
 }
+
+

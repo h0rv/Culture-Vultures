@@ -76,7 +76,6 @@ public class EditProfileActivity extends AppCompatActivity {
                 });
     }
 
-
     public void uploadBio(View view) {
         String newBio = editText.getText().toString();
         if (!newBio.matches("")) {

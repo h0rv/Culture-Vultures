@@ -64,39 +64,6 @@ public class EditProfileActivity extends AppCompatActivity {
         mStorageRef = FirebaseStorage.getInstance().getReference();
     }
 
-    public void pickImage(View view) {
-        checkWriteReadStorageRequest();
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == EDIT_PROFILE_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-            filePath = data.getData();
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
-                imageView.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 500, 500, true));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }
-
-    @AfterPermissionGranted(STORAGE_REQUEST)
-    private void checkWriteReadStorageRequest() {
-        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
-        if (EasyPermissions.hasPermissions(this, perms)) {
-            startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), EDIT_PROFILE_REQUEST_CODE);
-        } else {
-            EasyPermissions.requestPermissions(this, "Please grant permission", STORAGE_REQUEST, perms);
-        }
-    }
-
     public void signOut(View view) {
         AuthUI.getInstance()
                 .signOut(this)
@@ -141,7 +108,7 @@ public class EditProfileActivity extends AppCompatActivity {
                             //hiding the progress dialog
                             progressDialog.dismiss();
                             //and displaying a success toast
-                            Toast.makeText(getApplicationContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Upload Successful", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -174,6 +141,39 @@ public class EditProfileActivity extends AppCompatActivity {
 
     public void cancelChange(View view) {
         finish();
+    }
+
+    public void pickImage(View view) {
+        checkWriteReadStorageRequest();
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == EDIT_PROFILE_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            filePath = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                imageView.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 500, 500, true));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @AfterPermissionGranted(STORAGE_REQUEST)
+    private void checkWriteReadStorageRequest() {
+        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), EDIT_PROFILE_REQUEST_CODE);
+        } else {
+            EasyPermissions.requestPermissions(this, "Please grant permission", STORAGE_REQUEST, perms);
+        }
     }
 
 }

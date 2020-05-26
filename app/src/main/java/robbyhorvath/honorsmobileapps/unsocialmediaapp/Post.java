@@ -1,32 +1,38 @@
 package robbyhorvath.honorsmobileapps.unsocialmediaapp;
 
-import com.google.firebase.database.Exclude;
-import com.google.firebase.database.ServerValue;
-
-import java.util.HashMap;
+import java.util.Calendar;
 
 
 public class Post {
-
+    private String postId;
     private String description;
     private String posterId;
-    private HashMap<String, Object> timePosted;
+    private String timePosted;
 
     public Post() {
         // public empty constructor
     }
 
-    public Post(String description, String posterId) {
+    public Post(String postId, String description, String posterId) {
+        this.postId = postId;
         this.description = description;
         this.posterId = posterId;
-        timePosted = new HashMap<>();
-        timePosted.put("timestamp", ServerValue.TIMESTAMP);
+        timePosted = Calendar.getInstance().getTime().toString();
     }
 
-    public Post(String description, String posterId, HashMap<String, Object> timePosted) {
+    public Post(String postId, String description, String posterId, String timePosted) {
+        this.postId = postId;
         this.description = description;
         this.posterId = posterId;
         this.timePosted = timePosted;
+    }
+
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 
     public String getDescription() {
@@ -45,18 +51,12 @@ public class Post {
         this.posterId = posterId;
     }
 
-    public HashMap<String, Object> getTimePosted() {
+    public String getTimePosted() {
         return timePosted;
     }
 
-    @Exclude
-    public long getTimestampCreatedLong() {
-        return (long) timePosted.get("timestamp");
-    }
-
-    public void setTimePosted(HashMap<String, Object> timePosted) {
+    public void setTimePosted(String timePosted) {
         this.timePosted = timePosted;
     }
-
 
 }

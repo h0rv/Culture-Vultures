@@ -120,7 +120,7 @@ public class NewPostActivity extends AppCompatActivity {
     }
 
     private void uploadDatabase() {
-        Post post = new Post(descriptionEditText.getText().toString(), mAuth.getCurrentUser().getUid());
+        Post post = new Post(postKey,descriptionEditText.getText().toString(), mAuth.getCurrentUser().getUid());
         // add post to /posts/
         FirebaseDatabase.getInstance().getReference("Posts")
                 .child(postKey)

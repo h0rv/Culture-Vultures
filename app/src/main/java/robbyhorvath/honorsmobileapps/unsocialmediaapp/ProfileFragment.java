@@ -80,8 +80,7 @@ public class ProfileFragment extends Fragment {
         mProgressBar.setVisibility(View.VISIBLE);
         mNoInternetTextView = rootView.findViewById(R.id.profile_emptyView);
         mRecyclerView = rootView.findViewById(R.id.feedRecyclerView);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         ConnectivityManager connectivityManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
@@ -155,10 +154,17 @@ public class ProfileFragment extends Fragment {
     }
 
     private class FirebaseTask extends AsyncTask<Void, Void, Void> {
+
         @Override
         protected Void doInBackground(Void... aVoid) {
-            getPosts();
-            populateProfile();
+            try {
+                getPosts();
+                populateProfile();
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             return null;
         }
 

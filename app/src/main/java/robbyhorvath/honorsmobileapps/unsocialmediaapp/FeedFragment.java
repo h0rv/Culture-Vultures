@@ -36,8 +36,9 @@ public class FeedFragment extends Fragment {
     private TextView mNoInternetTextView;
     private RecyclerView mRecyclerView;
     private PostAdapter mAdapter;
-    private List<Post> posts;
     private String currentUserId;
+
+    private List<Post> posts;
 
     private DatabaseReference mPostsRef;
 
@@ -53,8 +54,7 @@ public class FeedFragment extends Fragment {
         mProgressBar.setVisibility(View.VISIBLE);
         mNoInternetTextView = rootView.findViewById(R.id.feed_emptyView);
         mRecyclerView = rootView.findViewById(R.id.feedRecyclerView);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         ConnectivityManager connectivityManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
@@ -66,8 +66,7 @@ public class FeedFragment extends Fragment {
             mProgressBar.setVisibility(View.INVISIBLE);
             mNoInternetTextView.setVisibility(View.VISIBLE);
         }
-        posts = new ArrayList<>();
-        mAdapter = new PostAdapter(posts);
+        mAdapter = new PostAdapter(new ArrayList<Post>());
         mRecyclerView.setAdapter(mAdapter);
         return rootView;
     }
@@ -77,35 +76,50 @@ public class FeedFragment extends Fragment {
         return fragment;
     }
 
-    private void getPosts() {
+    private List<Post> getPosts() {
+        posts = new ArrayList<>();
         mPostsRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    for (DataSnapshot child : snapshot.getChildren()) {
-                        posts.add(0, child.getValue(Post.class));
-                    }
-
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    posts.add(0, child.getValue(Post.class));
                 }
+            }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+        return posts;
     }
 
     private class FirebaseTask extends AsyncTask<Void, Void, Void> {
+
+
         @Override
         protected Void doInBackground(Void... aVoid) {
-            getPosts();
+            try {
+                getPosts();
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             mProgressBar.setVisibility(View.INVISIBLE);
-            mAdapter.setPosts(posts);
-            mAdapter.notifyDataSetChanged();
-            mRecyclerView.setVisibility(View.VISIBLE);
+            if (posts != null && posts.size() > 0) {
+                mRecyclerView.setVisibility(View.VISIBLE);
+                mAdapter.setPosts(posts);
+                mAdapter.notifyDataSetChanged();
+            }
+            else {
+                mRecyclerView.setVisibility(View.INVISIBLE);
+                mNoInternetTextView.setText("No Posts Found");
+                mNoInternetTextView.setVisibility(View.VISIBLE);
+            }
         }
     }
 

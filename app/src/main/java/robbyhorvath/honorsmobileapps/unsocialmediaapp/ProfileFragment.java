@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -89,7 +89,8 @@ public class ProfileFragment extends Fragment {
             mDatabaseRef = mDatabase.getReference();
             mPostsRef = mDatabaseRef.child("Posts");
             currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            new FirebaseTask().execute();
+            FirebaseTask();
+            populateProfile();
         } else {
             mProgressBar.setVisibility(View.INVISIBLE);
             mNoInternetTextView.setVisibility(View.VISIBLE);
@@ -136,14 +137,32 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    private void getPosts() {
+    private void FirebaseTask() {
+        posts = new ArrayList<>();
         Query userPostsQuery = mPostsRef.orderByChild("posterId");
-        userPostsQuery.equalTo(currentUserId).addValueEventListener(new ValueEventListener() {
+        userPostsQuery.equalTo(currentUserId).addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot child : snapshot.getChildren()) {
-                    posts.add(0, child.getValue(Post.class));
-                }
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                mProgressBar.setVisibility(View.INVISIBLE);
+                posts.add(0, dataSnapshot.getValue(Post.class));
+                mRecyclerView.setVisibility(View.VISIBLE);
+                mAdapter.setPosts(posts);
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
             }
 
             @Override
@@ -151,32 +170,8 @@ public class ProfileFragment extends Fragment {
 
             }
         });
+
     }
-
-    private class FirebaseTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... aVoid) {
-            try {
-                getPosts();
-                populateProfile();
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            mProgressBar.setVisibility(View.INVISIBLE);
-            mAdapter.setPosts(posts);
-            mAdapter.notifyDataSetChanged();
-            mRecyclerView.setVisibility(View.VISIBLE);
-        }
-    }
-
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {

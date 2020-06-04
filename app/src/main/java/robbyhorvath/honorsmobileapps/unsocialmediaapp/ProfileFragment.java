@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +21,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -112,19 +115,30 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User currentUser = dataSnapshot.getValue(User.class);
+                // TODO fix profile picture firebase caching to display new picture when updated
+                // TODO fix new users profile picture
+                FirebaseStorage.getInstance().getReferenceFromUrl("gs://androidfinalproject-e27f1.appspot.com/profile pictures/").child(currentUserId + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        GlideApp.with(ProfileFragment.this)
+                                .load(FirebaseStorage.getInstance().getReferenceFromUrl("gs://androidfinalproject-e27f1.appspot.com/profile pictures/").child(currentUserId + ".jpg"))
+                                .into(profileImageView);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        GlideApp.with(ProfileFragment.this)
+                                .load(FirebaseStorage.getInstance().getReferenceFromUrl("gs://androidfinalproject-e27f1.appspot.com/profile pictures/default-user.jpg"))
+                                .into(profileImageView);
+                    }
+                });
                 try {
-                    // TODO fix profile picture firebase caching to display new picture when updated
-                    // TODO fix new users profile picture
-                    GlideApp.with(ProfileFragment.this)
-                            .load(FirebaseStorage.getInstance().getReferenceFromUrl("gs://androidfinalproject-e27f1.appspot.com/profile pictures/").child(currentUserId + ".jpg"))
-                            .into(profileImageView);
                     String username = '@' + "" + currentUser.getUsername();
                     usernameTextView.setText(username);
                     bioTextView.setText(currentUser.getBio());
                 } catch (Exception e) {
-                    GlideApp.with(ProfileFragment.this)
-                            .load(FirebaseStorage.getInstance().getReferenceFromUrl("gs://androidfinalproject-e27f1.appspot.com/profile pictures/xidK56sEwjUiq0HLBbMRSiMRkJ92.jpg"))
-                            .into(profileImageView);
+                    usernameTextView.setText("Error");
+                    bioTextView.setText("Error");
                     e.printStackTrace();
                 }
             }

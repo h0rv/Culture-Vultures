@@ -36,6 +36,7 @@ public class SearchFragment extends Fragment {
     private List<User> users;
 
     private DatabaseReference mUsersRef;
+
     public SearchFragment() {
         // Required empty public constructor
     }
@@ -75,16 +76,25 @@ public class SearchFragment extends Fragment {
         return rootView;
     }
 
-    private void attachSearchViewListener(){
+    private void attachSearchViewListener() {
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+                users = new ArrayList<>();
+                mAdapter.setUsers(users);
+                mAdapter.notifyDataSetChanged();
                 FirebaseTask(s.toLowerCase());
-                return false;
+                return true;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
+                if (s.equals("")) {
+                    users = new ArrayList<>();
+                    mAdapter.setUsers(users);
+                    mAdapter.notifyDataSetChanged();
+                    return true;
+                }
                 return false;
             }
         });
@@ -92,7 +102,8 @@ public class SearchFragment extends Fragment {
 
     private void FirebaseTask(String queryText) {
         Query usersQuery = mUsersRef.orderByChild("username")
-                .startAt(queryText);
+                .startAt(queryText)
+                .endAt(queryText + "\uf8ff");
         usersQuery.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -104,25 +115,23 @@ public class SearchFragment extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
 
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            }
 
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-                }
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
 
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                }
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
-
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 }

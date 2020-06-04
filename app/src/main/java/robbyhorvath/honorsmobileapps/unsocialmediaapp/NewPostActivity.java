@@ -135,17 +135,7 @@ public class NewPostActivity extends AppCompatActivity {
                 }
             }
         });
-        // update users/uid/posts/
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(mAuth.getCurrentUser().getUid()).child("posts").child(postKey)
-                .setValue(postKey).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    finish();
-                }
-            }
-        });
+
     }
 
 

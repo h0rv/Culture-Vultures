@@ -93,11 +93,11 @@ public class SignUpActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if (task.isSuccessful()) {
-
-                            User user = new User(email, username);
+                            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            User user = new User(uid, email, username);
 
                             FirebaseDatabase.getInstance().getReference("Users")
-                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .child(uid)
                                     .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>()  {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {

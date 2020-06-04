@@ -29,7 +29,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +53,6 @@ public class ProfileFragment extends Fragment {
     private FirebaseDatabase mDatabase;
     private DatabaseReference mDatabaseRef;
     private DatabaseReference mPostsRef;
-    private StorageReference mStorageRef;
 
     public ProfileFragment() {
     }
@@ -151,26 +149,21 @@ public class ProfileFragment extends Fragment {
             }
 
             @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
             }
 
             @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
             }
 
             @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+            public void onCancelled(DatabaseError databaseError) {
             }
         });
-
     }
 
     @Override
@@ -184,7 +177,6 @@ public class ProfileFragment extends Fragment {
         startActivityForResult(intent, PROFILE_REQUEST_CODE);
         return true;
     }
-
 
 }
 

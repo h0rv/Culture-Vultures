@@ -2,4 +2,6 @@
 ### Culture-Vultures 
 #### Streetwear and Hip-Hop Archive Social Media App
 High School Android Final Project App
-![Feed](cvFeed.png) ![Profile](cvProfile.png) ![Search](cvSearch.png)
+<img src="https://github.com/robbyhorvath/Culture-Vultures/blob/master/cv.png" width="200" />
+<img src="https://github.com/robbyhorvath/Culture-Vultures/blob/master/cv1.png" width="200" />
+<img src="https://github.com/robbyhorvath/Culture-Vultures/blob/master/cv2.png" width="200" />
